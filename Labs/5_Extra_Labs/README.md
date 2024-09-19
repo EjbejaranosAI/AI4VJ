@@ -5,6 +5,9 @@ These labs cover additional topics that help you get familiar with important too
 ## Lab Breakdown
 
 ### Introduction to Python (Installation, Environments, Main Libraries) (2%) 🐍
+Some usesful references to install python:
+1. https://realpython.com/installing-python/
+2. https://www.toolsqa.com/python/install-python/
 
 - **Focus:** Set up Python for game development.
 - **Goal:** Install Python, set up environments, and use core libraries.
