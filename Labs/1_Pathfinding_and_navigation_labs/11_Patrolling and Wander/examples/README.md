@@ -9,44 +9,68 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 ## 🧠 Concept Map of Steering Behaviors
 
 
-```mermaid
-mindmap
+```mermaidmindmap
   root(("Steering Behaviors"))
     Basic_Behaviors
+    ::icon(fa fa-cogs):::basic_behaviors
       Seek
+      ::icon(fa fa-arrow-circle-up):::behavior
         description["Moves the agent toward a target"]
         relationships["Used in Pursue and Hide behaviors"]
       Flee
+      ::icon(fa fa-arrow-circle-down):::behavior
         description["Moves the agent away from a target"]
         relationships["Used in Evade and Hide behaviors"]
       Wander
+      ::icon(fa fa-random):::behavior
         description["Allows random movement for more lifelike behavior"]
       Pursue
+      ::icon(fa fa-bullseye):::behavior
         description["Predicts the target's future position and moves toward it"]
         relationships["Built on Seek"]
       Evade
+      ::icon(fa fa-shield-alt):::behavior
         description["Predicts the future position of a threat and moves away"]
         relationships["Built on Flee"]
       Hide
+      ::icon(fa fa-eye-slash):::behavior
         description["Finds cover to avoid detection"]
         relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
+
     Combining_Steering_Behaviors
+    ::icon(fa fa-layer-group):::combining_behaviors
       Blending
+      ::icon(fa fa-mix):::combine
         description["Combines multiple behaviors for smooth movement"]
         example["Example: Blending Seek and Flee"]
       Arbitration
+      ::icon(fa fa-balance-scale-left):::combine
         description["Chooses the most appropriate behavior based on conditions"]
         example["Example: Switching between Pursue and Evade based on proximity"]
       Prioritization
+      ::icon(fa fa-tasks):::combine
         description["Assigns importance to behaviors and executes the most urgent"]
         example["Example: Prioritizing Evade over Wander in case of danger"]
+
     Complex_Behaviors
+    ::icon(fa fa-brain):::complex_behaviors
       Evade_and_Hide
+      ::icon(fa fa-user-shield):::complex
         description["Combines Evade to avoid danger and Hide to seek cover"]
       Pursue_and_Wander
+      ::icon(fa fa-question):::complex
         description["Mixes Pursue and Wander for unpredictable chasing behavior"]
       Blended_Caution
+      ::icon(fa fa-exclamation-triangle):::complex
         description["Uses a blend of Seek and Flee for cautious movement"]
+
+  %% Style Definitions
+  classDef basic_behaviors fill:#f9f,stroke:#333,stroke-width:2px;
+  classDef combining_behaviors fill:#ffec99,stroke:#333,stroke-width:2px;
+  classDef complex_behaviors fill:#d1e7dd,stroke:#333,stroke-width:2px;
+  classDef behavior fill:#c1e1ec,stroke:#036,stroke-width:2px;
+  classDef combine fill:#f7c6c7,stroke:#630,stroke-width:2px;
+  classDef complex fill:#b5ead7,stroke:#080,stroke-width:2px;
 
 ```
 
