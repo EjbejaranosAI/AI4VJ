@@ -8,7 +8,7 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 
 ## 🧠 Concept Map of Steering Behaviors
 
-
+```
               +--------------------+
               |  Basic Behaviors   |
               +--------------------+
@@ -26,8 +26,35 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
     +---------+---------+---------+---------+---------+
     |         |         |         |         |         |
   Blending   Arbitration   Priorities    Complex     Custom
+```
 
+```mermaid
+graph TD;
+    A[Steering Behaviors] --> B[Basic Behaviors];
+    B --> C[Seek];
+    B --> D[Flee];
+    B --> E[Wander];
+    B --> F[Pursue];
+    B --> G[Evade];
+    B --> H[Hide];
 
+    A --> I[Combining Steering Behaviors];
+    I --> J[Blending];
+    I --> K[Arbitration];
+    I --> L[Prioritization];
+
+    J --> M[Blending Seek and Flee];
+    K --> N[Arbitration between Pursue and Evade];
+    L --> O[Prioritization of Evade over Wander];
+
+    F --> P[Complex Behaviors];
+    G --> P;
+    H --> P;
+
+    P --> Q[Evade and Hide];
+    P --> R[Pursue and Wander];
+    P --> S[Blended Caution];
+```
 
 ## ⚙️ Basic Steering Behaviors
 
