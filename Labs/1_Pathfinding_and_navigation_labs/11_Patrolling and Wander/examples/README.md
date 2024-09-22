@@ -9,7 +9,8 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 ## 🧠 Concept Map of Steering Behaviors
 
 
-```mermaidmindmap
+```mermaid
+mindmap
   root(("Steering Behaviors"))
     Basic_Behaviors
     ::icon(fa fa-cogs):::basic_behaviors
