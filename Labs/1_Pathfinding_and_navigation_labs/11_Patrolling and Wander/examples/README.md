@@ -14,18 +14,18 @@ mindmap
   root(("Steering Behaviors"))
     Basic_Behaviors
       Seek["Seek: Moves the agent toward a target"]
-        relationships["Relationships: Used in Pursue and Hide behaviors"]
+        relationships["Used in Pursue and Hide behaviors"]
       Flee["Flee: Moves the agent away from a target"]
-        relationships["Relationships: Used in Evade and Hide behaviors"]
+        relationships["Used in Evade and Hide behaviors"]
       Wander["Wander: Allows random movement for more lifelike behavior"]
       Pursue["Pursue: Predicts the target's future position and moves toward it"]
-        relationships["Relationships: Built on Seek"]
+        relationships["Built on Seek"]
       Evade["Evade: Predicts the future position of a threat and moves away"]
-        relationships["Relationships: Built on Flee"]
+        relationships["Built on Flee"]
       Hide["Hide: Finds cover to avoid detection"]
-        relationships["Relationships: Uses Seek to move to hiding spots, combined with Flee or Evade"]
+        relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
 
-    Combining_Steering_Behaviors
+    Combining_Behaviors
       Blending["Blending: Combines multiple behaviors for smooth movement"]
         example["Example: Blending Seek and Flee"]
       Arbitration["Arbitration: Chooses the most appropriate behavior based on conditions"]
