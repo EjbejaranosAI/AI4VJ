@@ -10,7 +10,8 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 
 
 ```mermaid
- root((Steering Behaviors))
+mindmap
+  root(("Steering Behaviors"))
     Basic_Behaviors
       Seek
         description["Moves the agent toward a target"]
@@ -29,7 +30,6 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
       Hide
         description["Finds cover to avoid detection"]
         relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
-    
     Combining_Steering_Behaviors
       Blending
         description["Combines multiple behaviors for smooth movement"]
@@ -40,7 +40,6 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
       Prioritization
         description["Assigns importance to behaviors and executes the most urgent"]
         example["Example: Prioritizing Evade over Wander in case of danger"]
-    
     Complex_Behaviors
       Evade_and_Hide
         description["Combines Evade to avoid danger and Hide to seek cover"]
@@ -48,6 +47,7 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
         description["Mixes Pursue and Wander for unpredictable chasing behavior"]
       Blended_Caution
         description["Uses a blend of Seek and Flee for cautious movement"]
+
 ```
 
 ## ⚙️ Basic Steering Behaviors
