@@ -11,44 +11,42 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 
 ```mermaid
 mindmap
-  root(("Steering Behaviors"))
-    Basic_Behaviors
-      Seek
-        description["Moves the agent toward a target"]
+  root((**Steering Behaviors**))
+    id_basic_behaviors["Basic Behaviors"]
+    ::icon(fa fa-cogs):::large
+      Seek["**Seek**\nMoves the agent toward a target"]
+      ::icon(fa fa-arrow-up)
         relationships["Used in Pursue and Hide behaviors"]
-      Flee
-        description["Moves the agent away from a target"]
+      Flee["**Flee**\nMoves the agent away from a target"]
+      ::icon(fa fa-arrow-down)
         relationships["Used in Evade and Hide behaviors"]
-      Wander
-        description["Allows random movement for more lifelike behavior"]
-      Pursue
-        description["Predicts the target's future position and moves toward it"]
+      Wander["**Wander**\nAllows random movement for more lifelike behavior"]
+      ::icon(fa fa-random)
+      Pursue["**Pursue**\nPredicts the target's future position and moves toward it"]
+      ::icon(fa fa-bullseye)
         relationships["Built on Seek"]
-      Evade
-        description["Predicts the future position of a threat and moves away"]
+      Evade["**Evade**\nPredicts the future position of a threat and moves away"]
+      ::icon(fa fa-shield-alt)
         relationships["Built on Flee"]
-      Hide
-        description["Finds cover to avoid detection"]
+      Hide["**Hide**\nFinds cover to avoid detection"]
+      ::icon(fa fa-eye-slash)
         relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
 
-    Combining_Steering_Behaviors
-      Blending
-        description["Combines multiple behaviors for smooth movement"]
+    id_combining_behaviors["Combining Behaviors"]
+    ::icon(fa fa-layer-group):::urgent
+      Blending["**Blending**\nCombines multiple behaviors for smooth movement"]
         example["Example: Blending Seek and Flee"]
-      Arbitration
-        description["Chooses the most appropriate behavior based on conditions"]
+      Arbitration["**Arbitration**\nChooses the most appropriate behavior based on conditions"]
         example["Example: Switching between Pursue and Evade based on proximity"]
-      Prioritization
-        description["Assigns importance to behaviors and executes the most urgent"]
+      Prioritization["**Prioritization**\nAssigns importance to behaviors and executes the most urgent"]
         example["Example: Prioritizing Evade over Wander in case of danger"]
 
-    Complex_Behaviors
-      Evade_and_Hide
-        description["Combines Evade to avoid danger and Hide to seek cover"]
-      Pursue_and_Wander
-        description["Mixes Pursue and Wander for unpredictable chasing behavior"]
-      Blended_Caution
-        description["Uses a blend of Seek and Flee for cautious movement"]
+    id_complex_behaviors["Complex Behaviors"]
+    ::icon(mdi mdi-brain)
+      Evade_and_Hide["**Evade and Hide**\nCombines Evade to avoid danger and Hide to seek cover"]
+      Pursue_and_Wander["**Pursue and Wander**\nMixes Pursue and Wander for unpredictable chasing behavior"]
+      Blended_Caution["**Blended Caution**\nUses a blend of Seek and Flee for cautious movement"]
+
 ```
 
 ## ⚙️ Basic Steering Behaviors
