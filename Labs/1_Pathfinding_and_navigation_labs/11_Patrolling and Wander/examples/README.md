@@ -13,30 +13,30 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 mindmap
   root(("Steering Behaviors"))
     Basic_Behaviors
-      Seek["Seek\nMoves the agent toward a target"]
-        relationships["Used in Pursue and Hide behaviors"]
-      Flee["Flee\nMoves the agent away from a target"]
-        relationships["Used in Evade and Hide behaviors"]
-      Wander["Wander\nAllows random movement for more lifelike behavior"]
-      Pursue["Pursue\nPredicts the target's future position and moves toward it"]
-        relationships["Built on Seek"]
-      Evade["Evade\nPredicts the future position of a threat and moves away"]
-        relationships["Built on Flee"]
-      Hide["Hide\nFinds cover to avoid detection"]
-        relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
+      Seek["Seek: Moves the agent toward a target"]
+        relationships["Relationships: Used in Pursue and Hide behaviors"]
+      Flee["Flee: Moves the agent away from a target"]
+        relationships["Relationships: Used in Evade and Hide behaviors"]
+      Wander["Wander: Allows random movement for more lifelike behavior"]
+      Pursue["Pursue: Predicts the target's future position and moves toward it"]
+        relationships["Relationships: Built on Seek"]
+      Evade["Evade: Predicts the future position of a threat and moves away"]
+        relationships["Relationships: Built on Flee"]
+      Hide["Hide: Finds cover to avoid detection"]
+        relationships["Relationships: Uses Seek to move to hiding spots, combined with Flee or Evade"]
 
     Combining_Steering_Behaviors
-      Blending["Blending\nCombines multiple behaviors for smooth movement"]
+      Blending["Blending: Combines multiple behaviors for smooth movement"]
         example["Example: Blending Seek and Flee"]
-      Arbitration["Arbitration\nChooses the most appropriate behavior based on conditions"]
+      Arbitration["Arbitration: Chooses the most appropriate behavior based on conditions"]
         example["Example: Switching between Pursue and Evade based on proximity"]
-      Prioritization["Prioritization\nAssigns importance to behaviors and executes the most urgent"]
+      Prioritization["Prioritization: Assigns importance to behaviors and executes the most urgent"]
         example["Example: Prioritizing Evade over Wander in case of danger"]
 
     Complex_Behaviors
-      Evade_and_Hide["Evade and Hide\nCombines Evade to avoid danger and Hide to seek cover"]
-      Pursue_and_Wander["Pursue and Wander\nMixes Pursue and Wander for unpredictable chasing behavior"]
-      Blended_Caution["Blended Caution\nUses a blend of Seek and Flee for cautious movement"]
+      Evade_and_Hide["Evade and Hide: Combines Evade to avoid danger and Hide to seek cover"]
+      Pursue_and_Wander["Pursue and Wander: Mixes Pursue and Wander for unpredictable chasing behavior"]
+      Blended_Caution["Blended Caution: Uses a blend of Seek and Flee for cautious movement"]
 
 ```
 
