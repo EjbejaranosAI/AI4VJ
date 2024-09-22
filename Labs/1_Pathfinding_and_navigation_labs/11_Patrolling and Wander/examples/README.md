@@ -8,52 +8,46 @@ We'll break down **basic steering behaviors**, explore how to **combine them int
 
 ## 🧠 Concept Map of Steering Behaviors
 
-```
-              +--------------------+
-              |  Basic Behaviors   |
-              +--------------------+
-                        |
-    +---------+---------+---------+---------+---------+
-    |         |         |         |         |         |
- Seek      Flee     Wander    Pursue     Evade    (Hide)
-    |         |         |         |         |         |
- +-----------------------------------------+---------+  
-                        |
-             +-----------------------------+
-             |  Combining Steering Behaviors |
-             +-----------------------------+
-                         |
-    +---------+---------+---------+---------+---------+
-    |         |         |         |         |         |
-  Blending   Arbitration   Priorities    Complex     Custom
-```
 
 ```mermaid
-graph TD;
-    A[Steering Behaviors] --> B[Basic Behaviors];
-    B --> C[Seek];
-    B --> D[Flee];
-    B --> E[Wander];
-    B --> F[Pursue];
-    B --> G[Evade];
-    B --> H[Hide];
-
-    A --> I[Combining Steering Behaviors];
-    I --> J[Blending];
-    I --> K[Arbitration];
-    I --> L[Prioritization];
-
-    J --> M[Blending Seek and Flee];
-    K --> N[Arbitration between Pursue and Evade];
-    L --> O[Prioritization of Evade over Wander];
-
-    F --> P[Complex Behaviors];
-    G --> P;
-    H --> P;
-
-    P --> Q[Evade and Hide];
-    P --> R[Pursue and Wander];
-    P --> S[Blended Caution];
+ root((Steering Behaviors))
+    Basic_Behaviors
+      Seek
+        description["Moves the agent toward a target"]
+        relationships["Used in Pursue and Hide behaviors"]
+      Flee
+        description["Moves the agent away from a target"]
+        relationships["Used in Evade and Hide behaviors"]
+      Wander
+        description["Allows random movement for more lifelike behavior"]
+      Pursue
+        description["Predicts the target's future position and moves toward it"]
+        relationships["Built on Seek"]
+      Evade
+        description["Predicts the future position of a threat and moves away"]
+        relationships["Built on Flee"]
+      Hide
+        description["Finds cover to avoid detection"]
+        relationships["Uses Seek to move to hiding spots, combined with Flee or Evade"]
+    
+    Combining_Steering_Behaviors
+      Blending
+        description["Combines multiple behaviors for smooth movement"]
+        example["Example: Blending Seek and Flee"]
+      Arbitration
+        description["Chooses the most appropriate behavior based on conditions"]
+        example["Example: Switching between Pursue and Evade based on proximity"]
+      Prioritization
+        description["Assigns importance to behaviors and executes the most urgent"]
+        example["Example: Prioritizing Evade over Wander in case of danger"]
+    
+    Complex_Behaviors
+      Evade_and_Hide
+        description["Combines Evade to avoid danger and Hide to seek cover"]
+      Pursue_and_Wander
+        description["Mixes Pursue and Wander for unpredictable chasing behavior"]
+      Blended_Caution
+        description["Uses a blend of Seek and Flee for cautious movement"]
 ```
 
 ## ⚙️ Basic Steering Behaviors
