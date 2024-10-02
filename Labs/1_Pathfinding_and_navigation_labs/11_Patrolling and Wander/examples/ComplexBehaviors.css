@@ -1,0 +1,280 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+
+public class Bot : MonoBehaviour
+{
+    // Reference to the NavMeshAgent component that will be used for navigation
+    NavMeshAgent agent;
+
+    // The target GameObject that the bot will interact with (pursue, seek, or flee from)
+    public GameObject target;
+    Drive ds;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Initialize the NavMeshAgent component
+        agent = this.GetComponent<NavMeshAgent>();
+        ds = target.GetComponent<Drive>();
+    }
+
+    // Seek method: Moves the bot towards the specified location
+    // This is a direct pursuit, where the bot sets its destination to the target's current position
+    void Seek(Vector3 location)
+    {
+        // Set the destination of the agent to the given location
+        agent.SetDestination(location);
+    }
+
+    // Flee method: Moves the bot away from the specified location
+    // This behavior makes the bot "run away" from the target
+    void Flee(Vector3 location)
+    {
+        // Calculate the direction vector from the target to the bot (flee direction)
+        Vector3 fleeVector = location - this.transform.position;
+        // Set the destination to a point in the opposite direction, making the bot flee
+        agent.SetDestination(this.transform.position - fleeVector);
+    }
+
+    // Pursue method: Predicts the future position of the target and moves towards that predicted position
+    // This method handles more advanced chasing by considering the target's movement speed and direction
+    void Pursue()
+    {
+        // Calculate the direction vector from the bot to the target
+        Vector3 targetDir = target.transform.position - this.transform.position;
+        
+        // Calculate the angle between the forward direction of the bot and the forward direction of the target
+        float relativeHeading = Vector3.Angle(this.transform.forward, this.transform.TransformVector(target.transform.forward));
+
+        // Calculate the angle between the bot's forward direction and the direction towards the target
+        float toTarget = Vector3.Angle(this.transform.forward, this.transform.TransformVector(targetDir));
+
+        // Conditional logic to decide whether to pursue directly or to predict the future position
+        // First condition: If the target is more than 90 degrees ahead of the bot and the bot is nearly aligned with the target
+        // OR if the target's speed is close to zero, pursue the target directly
+        if((toTarget > 90 && relativeHeading < 20) || ds.currentSpeed < 0.01f)
+        {
+            // Use direct pursuit by seeking the target's current position
+            Seek(target.transform.position);
+            return;  // Exit the method early if direct pursuit is chosen
+        }
+
+        // Second condition: Predict where the target will be in the future based on its speed and distance
+        // Calculate how far ahead to look based on the distance and speed differences between the bot and the target
+        float lookAhead = targetDir.magnitude / (agent.speed + ds.currentSpeed);
+        
+        // Seek the predicted future position of the target
+        Seek(target.transform.position + target.transform.forward * lookAhead);
+    }
+
+    // Evade method: Moves the bot away from the target if it is within a certain angle
+    void Evade()
+    {
+        // Compute targetDir
+        Vector3 targetDir = target.transform.position - this.transform.position;
+
+        float relativeHeading = Vector3.Angle(this.transform.forward, this.transform.TransformVector(target.transform.forward));
+        float toTarget = Vector3.Angle(this.transform.forward, this.transform.TransformVector(targetDir));
+
+        if((toTarget < 90 && relativeHeading < 20) || ds.currentSpeed <0.01f)
+        {
+            Flee(target.transform.position);
+            return;
+
+        }
+        // Compute the lookAhead
+        float lookAhead = targetDir.magnitude / (agent.speed + ds.currentSpeed);
+        // Pass the lookAhead to the Flee
+
+        Flee(target.transform.position + target.transform.forward * lookAhead);
+    }
+    // Wander method: The Wander method allows the bot to move randomly within a defined space, giving it a more lifelike behavior.
+    Vector3 wanderTarget = Vector3.zero;        // Variables for wander behavior
+    void Wander()
+    {
+        float wanderRadius = 10; // Increasing the wanderRadius you can get smoothing movements, but need to check that the position in the navmesh exist, otherwise the values could be not reasonable and the character can not move
+        float wanderDistance = 10;
+        float wanderJitter = 1; // Try to change the wanderJitter between small and big values to see what happens with the movement
+
+        wanderTarget += new Vector3(Random.Range(-1.0f, 1.0f) * wanderJitter, 
+                                        0, 
+                                        Random.Range(-1.0f, 1.0f) * wanderJitter);
+        wanderTarget.Normalize();
+        wanderTarget *= wanderRadius;
+
+        Vector3 targetLocal = wanderTarget + new Vector3(0,0, wanderDistance);
+        Vector3 targetWorld = this.gameObject.transform.InverseTransformVector(targetLocal);
+
+        Seek(targetWorld);
+
+    }
+
+    // BasicHide: Bot hides behind obstacles (simple hiding behavior)
+    // The bot looks for hiding spots and positions itself behind them, relative to the target's position
+    void BassicHide()
+    {
+        float distance = Mathf.Infinity;    // Track the shortest distance to a hiding spot
+        Vector3 chosenSpot = Vector3.zero;  // The final hiding position
+        // Iterate over all hiding spots to find the best one
+        for (int i = 0; i < World.Instance.GetHidingSpots().Length; ++i)
+        {
+            // Compute the direction from the target to the hiding spot (hideDir) in this case the tree or the house
+            Vector3 hideDir = World.Instance.GetHidingSpots()[i].transform.position - target.transform.position; 
+            // Calculate the hide position, behind the obstacle (6 units away from the target)
+            Vector3 hidePos = World.Instance.GetHidingSpots()[i].transform.position + hideDir.normalized * 6; // TODO: try modified the number to see what happens
+            
+            // Choose the closest hiding spot to the bot
+            if(Vector3.Distance(this.transform.position, hidePos) < distance)
+            {
+                chosenSpot = hidePos;
+                distance = Vector3.Distance(this.transform.position, hidePos);
+            }
+            // Move to the chosen hiding spot
+            Seek(chosenSpot);
+            
+        } 
+    }
+
+    // CleverHide: Uses obstacle's collider to compute more accurate hiding position(It is using the collider of the objects as limit )
+    // In this method, the bot takes into account the exact geometry of the hiding spot using raycasting
+    void CleverHide() {
+
+        float dist = Mathf.Infinity;  // Track the shortest distance to a hiding spot
+        Vector3 chosenSpot = Vector3.zero;  // The final hiding position
+        Vector3 chosenDir = Vector3.zero;  // Direction from the target to the hiding spot
+        GameObject chosenGO = World.Instance.GetHidingSpots()[0];  // Reference to the best hiding spot object
+
+        // Find the best hiding spot based on distance
+        for (int i = 0; i < World.Instance.GetHidingSpots().Length; ++i) {
+
+            Vector3 hideDir = World.Instance.GetHidingSpots()[i].transform.position - target.transform.position;
+            Vector3 hidePos = World.Instance.GetHidingSpots()[i].transform.position + hideDir.normalized * 10.0f;
+
+            if (Vector3.Distance(transform.position, hidePos) < dist) {
+
+                chosenSpot = hidePos;
+                chosenDir = hideDir;
+                chosenGO = World.Instance.GetHidingSpots()[i];
+                dist = Vector3.Distance(transform.position, hidePos);
+            }
+        }
+
+        // Use raycasting to refine the hide position based on the hiding spot's collider
+        Collider hideCol = chosenGO.GetComponent<Collider>(); // Get the collider of the chosen hiding object
+        Ray backRay = new Ray(chosenSpot, -chosenDir.normalized); // Cast a ray from the hiding spot, away from the target
+        RaycastHit info;
+        float distance = 100.0f;
+        hideCol.Raycast(backRay, out info, distance);
+
+        Seek(info.point + chosenDir.normalized * 5.0f);
+    }
+
+    // Check if the bot can see the target (line-of-sight check)
+    bool CanSeeTarget()
+    {
+        RaycastHit raycastInfo;
+        Vector3 rayToTarget = target.transform.position - this.transform.position;
+        if(Physics.Raycast(this.transform.position, rayToTarget, out raycastInfo))
+        {
+            // If the ray hits the target, it means the bot can see the target
+            if(raycastInfo.transform.gameObject.tag == "cop") return true;
+        }
+        return false;
+    }
+
+    bool CanSeeTargetWithAngles()
+    {
+        RaycastHit raycastInfo;
+        Vector3 rayToTarget = target.transform.position - this.transform.position;
+        // Calculate the angle between the bot's forward direction and the target
+        float lookAngle = Vector3.Angle(this.transform.forward, rayToTarget);
+        // If the target is within 60 degrees and the ray hits the target, return true
+        if(lookAngle <60 && Physics.Raycast(this.transform.position, rayToTarget, out raycastInfo))
+        {
+            // If the ray hits the target, it means the bot can see the target
+            if(raycastInfo.transform.gameObject.tag == "cop") return true;
+        }
+        return false;
+    }
+
+    // Check if the bot can see the target, considering the bot's view angle (field-of-view)
+    bool CanSeeMeWithAngles()
+    {
+        // Direction from target to bot
+        Vector3 rayToMe = this.transform.position - target.transform.position;
+        // Calculate the angle between the target's forward direction and the bot
+        float lookAngle = Vector3.Angle(target.transform.forward, rayToMe); 
+        // If the bot is within 60 degrees of the target's view, return true
+        if(lookAngle <60)
+        {
+            return true; // Bot is visible to the target
+        }
+        return false;
+    }
+    
+    bool coolDown = false;
+    void BehaviourCooldown()
+    {
+        coolDown = false;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Visualize the forward direction of the bot
+        Debug.DrawRay(this.transform.position, this.transform.forward * 4, Color.blue);
+
+        // Visualize the direction to the target
+        Debug.DrawLine(this.transform.position, target.transform.position, Color.green);
+
+        // The following lines demonstrate how you can switch between different behaviors (Seek, Flee, Pursue)
+        // To test different behaviors, uncomment one of the lines below:
+
+        // 1. Uncomment the line below to make the bot flee from the target
+        // Flee(target.transform.position);
+
+        // 2. Uncomment the line below to make the bot seek (move directly towards) the target
+        // Seek(target.transform.position);
+
+        // 3. Uncomment the line below to make the bot pursue the target using the advanced prediction
+        // Pursue();
+
+        // 4. Uncomment the line below to make the bot evade the target
+        // Evade();
+
+        // 5. By default, the bot will wander around randomly
+        //Wander();
+
+        // 6. Basic hide behavior
+        //BassicHide();
+
+        //7. Clever Hide with method to see the cop: Here it is necessary that you put a tag into the cop in the inspector page(DON'T FORGET)
+        //if(CanSeeTarget())
+        //    CleverHide();
+
+        //8. Clever Hide with method to see the cop taking into account that the robber is facing the cop, here as default have an angle of 60 that is the angle of vision(This angle is taken from the vector between the robber and cop and it is calculated as the desire angle of vision that have the robber)
+        //if(CanSeeTargetWithAngles())
+        //    CleverHide();
+
+
+        //8. Clever hide and Pursue(here I can see the cop and also the robber know when the cop are observing him)
+        // Combining CleverHide with Pursue based on visibility conditions
+        if(!coolDown)
+        {
+            if(CanSeeTargetWithAngles() && CanSeeMeWithAngles())
+            {
+                CleverHide();
+                coolDown = true;
+                Invoke("BehaviourCooldown", 5);
+            }
+            else
+                Pursue();
+        }
+
+
+    }
+
+}
